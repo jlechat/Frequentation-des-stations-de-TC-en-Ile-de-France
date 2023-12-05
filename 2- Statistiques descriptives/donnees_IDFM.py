@@ -5,6 +5,9 @@ import requests
 from io import BytesIO, StringIO
 from zipfile import ZipFile
 import warnings
+import geopandas as gpd
+from shapely.geometry import Point
+
 
 def donnees_validation_23() :
     """
@@ -78,4 +81,13 @@ def donnees_archives() :
         validations_annees=pd.concat([validations_annees, NB])
         profils_annees=pd.concat([profils_annees, PRO])
     return validations_annees, profils_annees
+
+def donnees_stations_toutes() :
+    url="https://data.iledefrance-mobilites.fr/api/explore/v2.1/catalog/datasets/emplacement-des-gares-idf/exports/csv?lang=fr&timezone=Europe%2FBerlin&use_labels=true&delimiter=%3B"
+    stations=pd.read_csv(url, sep=";")
+    stations = gpd.GeoDataFrame(stations, geometry=[Point(xy) for xy in zip(stations.x, stations.y)])
+    stations.crs = "EPSG:2154"
+    return stations
     
+    
+
