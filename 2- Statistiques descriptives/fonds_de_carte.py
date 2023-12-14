@@ -1,3 +1,5 @@
+#Ce script contient la fonction qui permet de créer les géométries pour les fonds de cartes
+#avec les communes.
 from IPython.utils import io
 from io import BytesIO  
 

@@ -1,6 +1,7 @@
 import geopandas as gpd
 import requests
-from io import BytesIO  # Assurez-vous d'importer BytesIO
+from IPython.utils import io
+from io import BytesIO 
 from zipfile import ZipFile
 import tempfile
 import os

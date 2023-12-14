@@ -88,6 +88,14 @@ def donnees_stations_toutes() :
     stations = gpd.GeoDataFrame(stations, geometry=[Point(xy) for xy in zip(stations.x, stations.y)])
     stations.crs = "EPSG:2154"
     return stations
+
+def donnees_stations_toutes_sauvegarde() :
+    url="https://drive.google.com/uc?export=download&id=1meJK1440KCLhubkyL9iZ6sXfuUaWRYJJ"
+    stations=pd.read_csv(url, sep=";")
+    stations = gpd.GeoDataFrame(stations, geometry=[Point(xy) for xy in zip(stations.x, stations.y)])
+    stations.crs = "EPSG:2154"
+    return stations
+
     
     
 
