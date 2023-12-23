@@ -52,3 +52,4 @@ def data_INSEE_stations():
         stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Petit-Jouy-les-Loges']
         
     return stations_socio_RER
+
