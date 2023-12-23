@@ -18,3 +18,4 @@ def df_jointure_validations_stations():
     joint_table['Mois'] = joint_table['JOUR'].dt.month
     joint_table['Année'] = joint_table['JOUR'].dt.year
     return joint_table
+    
