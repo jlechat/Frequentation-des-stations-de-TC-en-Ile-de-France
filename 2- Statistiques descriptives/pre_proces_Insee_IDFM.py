@@ -1,6 +1,6 @@
 #Ce script contient la fonction qui permet de télécharger et de mettre en forme les données de l'Insee
 #après leur jointure avec les stations de RER.
-#Les explications sont accessibles depuis le Note Book "pro_process_INSEE_IDFM.ipynb" du dossier 
+#Les explications sont accessibles depuis le Note Book "pre_process_INSEE_IDFM.ipynb" du dossier 
 #"1- Importation des données".
 
 from IPython.utils import io
@@ -40,4 +40,16 @@ def data_INSEE_stations():
         for colonne in colonnes_a_modifier:
             elements_ajout[colonne] = 0
         stations_socio_RER = gpd.GeoDataFrame(pd.concat([stations_socio_RER, elements_ajout], ignore_index=True))
+        #On retire les stations en trop pour la suite de l'analyse
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Creil']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Chantilly-Gouvieux']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Orry-la-Ville-Coye-la-Forêt']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'La Borne Blanche']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Malesherbes']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Igny']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Bièvres']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Vauboyen']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Jouy-en-Josas']
+        stations_socio_RER = stations_socio_RER[stations_socio_RER['nom_long'] != 'Petit-Jouy-les-Loges']
+        
     return stations_socio_RER
