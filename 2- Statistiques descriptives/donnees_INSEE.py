@@ -1,3 +1,5 @@
+#Ce script contient les fonctions qui permettent de télécharger les données de l'Insee qui contiennent les 
+#informations socio-démographiques : carreaux de 1km.
 import geopandas as gpd
 import requests
 from io import BytesIO  # Assurez-vous d'importer BytesIO
