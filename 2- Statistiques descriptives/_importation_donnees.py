@@ -10,6 +10,7 @@ import geopandas as gpd
 from shapely.geometry import Point
 import tempfile
 import os
+from bs4 import BeautifulSoup
 
 #1- DONNEES INSEE :
 def donnees_INSEE():
@@ -132,5 +133,109 @@ def donnees_stations_toutes_sauvegarde() :
     stations = gpd.GeoDataFrame(stations, geometry=[Point(xy) for xy in zip(stations.x, stations.y)])
     stations.crs = "EPSG:2154"
     return stations
+
+#3 - Scrapping
+
+def scrapping():
+    url = 'https://fr.wikipedia.org/wiki/Liste_des_gares_du_RER_d%27%C3%8Ele-de-France'
+    response = requests.get(url)
+    html = response.content
+    soup = BeautifulSoup(html, 'html.parser')
+
+    def clean_text(text):
+        return text.replace('\xa0', ' ').strip() 
+
+
+    lignes = []
+    gares = []  
+    
+    for row in soup.find_all('tr'):
+        cells = row.find_all('td')
+        if len(cells) > 1:
+
+            station_link = cells[0].find('a')
+            if station_link:
+                station_name = clean_text(station_link.get_text())
+                gares.append(station_name)
+                lignes.append([clean_text(link['title'].replace("Ligne", "")) for cell in cells[1:] for link in cell.find_all('a', title=True) if 'Ligne' in link['title']])
+        
+
+    tableau_gares = soup.find("table", class_=["wikitable sortable center"])
+    tableau_gares_non_desservies = soup.find("table", class_=["wikitable sortable"])
+
+    url_gares=[]
+
+    for row in tableau_gares.find_all("tr")[1:]:  
+            cellules = row.find_all("td")
+            lien = cellules[0].find("a")
+            url_gare = "https://fr.wikipedia.org" + lien.get("href")
+            url_gares.append(url_gare)
+
+    for row in tableau_gares_non_desservies.find_all("tr")[1:]:  
+            cellules = row.find_all("td")
+            lien = cellules[0].find("a")
+            url_gare = "https://fr.wikipedia.org" + lien.get("href")
+            url_gares.append(url_gare)
+                
+    bus=[]
+    bus_jour = []
+    noctilien = []
+
+    for url in url_gares :
+        response = requests.get(url)
+        html = response.content
+        soup = BeautifulSoup(html, 'html.parser')
+        bandeau = soup.find("table", {'class' : 'infobox_v2 noarchive'})
+        td_tags = bandeau.find_all("td")
+        numeros_lignes_bus = []
+
+        for td_tag in td_tags : 
+
+            balises_b = td_tag.find_all("b")
+
+            for balise_b in balises_b:
+                numero_ligne = balise_b.get_text()
+                numeros_lignes_bus.append(clean_text(numero_ligne))
+
+        bus_clean = [num for num in numeros_lignes_bus if (any(i.isdigit() for i in num) or len(num)<3)]
+        nocti = [i for i in bus_clean if i.startswith('N') and i[1].isdigit()]
+        bus_j = [x for x in bus_clean if not (x.startswith('N') and x[1].isdigit())]
+        concat = [bus_jour,noctilien]
+        bus.append(concat)
+        bus_jour.append(bus_j)
+        noctilien.append(nocti)
+
+
+    for i in range(len(gares)):
+        gares[i] = gares[i].upper()
+    
+    concat = { 
+        'arret' : gares,
+        'lignes' : lignes,
+        'bus_jour' : bus_jour,
+        'noctilien' : noctilien,
+    }
+
+    data_bus = pd.DataFrame(concat)
+
+    quanti_bus = data_bus.copy()
+    quanti_bus['lignes'] = quanti_bus['lignes'].apply(lambda x: len(x))
+    quanti_bus['bus_jour'] = quanti_bus['bus_jour'].apply(lambda x: len(x))
+    quanti_bus['noctilien'] = quanti_bus['noctilien'].apply(lambda x: len(x))
+    return quanti_bus
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
