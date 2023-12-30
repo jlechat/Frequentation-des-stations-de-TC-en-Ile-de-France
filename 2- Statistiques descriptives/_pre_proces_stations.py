@@ -16,13 +16,20 @@ def df_validations():
 
 def df_stations():
     stations_RER=data_INSEE_stations()
+    bus = scrapping()
+    bus['nom_long'] = bus['arret']
+    bus.drop(columns = 'arret')
     # Grouper les données par 'id_ref_ZdC' et appliquer une fonction personnalisée pour concaténer 'res_com'
     def concatenate_res_com(group):
         # Concaténer toutes les 'res_com' avec un séparateur, par exemple une virgule ou un espace
         return ', '.join(group['res_com'])
-    
-    # Appliquer la fonction personnalisée pour chaque groupe
+        
+    for i in range(234):
+        stations_RER['nom_long'][i] = stations_RER['nom_long'][i].upper()
+        
+      # Appliquer la fonction personnalisée pour chaque groupe
     aggregated_stations = stations_RER.groupby('id_ref_ZdC').apply(concatenate_res_com).reset_index(name='res_com')
     unique_stations = stations_RER.drop_duplicates(subset='id_ref_ZdC').drop(columns=['res_com'])
     final_stations = unique_stations.merge(aggregated_stations, on='id_ref_ZdC')
-    return final_stations
+    final_stations_bus = pd.merge(bus, final_stations, on='nom_long', how='inner')
+    return final_stations_bus
