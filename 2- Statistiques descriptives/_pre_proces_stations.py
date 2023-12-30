@@ -23,10 +23,10 @@ def df_stations():
     def concatenate_res_com(group):
         # Concaténer toutes les 'res_com' avec un séparateur, par exemple une virgule ou un espace
         return ', '.join(group['res_com'])
-        
+"""        
     for i in range(234):
         stations_RER['nom_long'][i] = stations_RER['nom_long'][i].upper()
-        
+ """       
       # Appliquer la fonction personnalisée pour chaque groupe
     aggregated_stations = stations_RER.groupby('id_ref_ZdC').apply(concatenate_res_com).reset_index(name='res_com')
     unique_stations = stations_RER.drop_duplicates(subset='id_ref_ZdC').drop(columns=['res_com'])
