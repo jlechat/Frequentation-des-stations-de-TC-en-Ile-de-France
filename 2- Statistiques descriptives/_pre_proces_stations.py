@@ -1,6 +1,7 @@
 import pandas as pd
 from _importation_donnees import donnees_validation_23
 from _pre_proces_Insee_IDFM import data_INSEE_stations
+from _importation_donnees import scrapping
 
 """
 def df_validations():

@@ -204,10 +204,6 @@ def scrapping():
         bus.append(concat)
         bus_jour.append(bus_j)
         noctilien.append(nocti)
-
-
-    for i in range(len(gares)):
-        gares[i] = gares[i].upper()
     
     concat = { 
         'arret' : gares,
